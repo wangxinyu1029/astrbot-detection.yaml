@@ -1,0 +1,31 @@
+id: dataease-poc
+
+info:
+  name: DataEase POC
+  author: ProjectDiscoveryAI
+  severity: medium
+  description: |
+    This template checks for a potential vulnerability in DataEase applications.
+    It sends a request to a known endpoint and validates the response to confirm the presence of the vulnerability.
+  tags: dataease,poc
+
+http:
+  - raw:
+      - |
+        GET /known-vulnerable-endpoint HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Nuclei
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+      - type: word
+        part: body
+        words:
+          - "DataEase application detected"
+      - type: regex
+        part: header
+        regex:
+          - "Server:.*DataEase"
